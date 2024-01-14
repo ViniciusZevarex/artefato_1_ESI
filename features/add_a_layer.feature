@@ -7,7 +7,8 @@ Feature: User can manually add a layer
     And I fill the field Senha with estudante.da.each@usp.br123
     And I press Entrar
     Then I should be logged on
-    When I click user icon
+    When I verify if a error modal is displayed close
+    And I click user icon
     And follow Painel
     Then I should be on the Dashboard page
     When I follow Nova Camada
@@ -18,6 +19,7 @@ Feature: User can manually add a layer
     When I fill the time data
     And I press the Enviar button
     When I follow Mapa
+    And I verify if a error modal is displayed close
     And I click Camadas
     And click on the layers controll
     And search for teste number

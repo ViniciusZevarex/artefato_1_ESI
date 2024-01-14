@@ -24,7 +24,8 @@ const driver = new Builder()
 // Navigate to sobre
 
 Given('I am on the Pauliceia 2.0 home page', {timeout: 60 * 1000}, async function () {
-    await driver.get('https://pauliceia.unifesp.br/portal/home');
+    await driver.get('http://localhost:8080/portal/home');
+    // await driver.get('https://pauliceia.unifesp.br/portal/home');
 });
 
 When('I follow Sobre', {timeout: 60 * 1000}, async function () {
@@ -41,7 +42,6 @@ Then('I should be on the Sobre page', {timeout: 60 * 1000}, async function () {
 
 
 // Navigate to contato
-
 When('I follow Contato', {timeout: 60 * 1000}, async function () {
     await driver.findElement(By.xpath("/html/body/div/section/div/header/nav/div/ul/li[5]/a")).click();
     this.actualAnswer =  'contact';
@@ -137,7 +137,7 @@ When('I fill the required data', {timeout: 60 * 1000}, async function () {
     await driver.findElement(By.xpath("//*[@id=\"inputName\"]")).sendKeys("teste camada " + this.nomeCamada);
     await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).click();
     await driver.sleep(100);
-    await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).sendKeys("testes");
+    await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).sendKeys("generic");
     await driver.sleep(200);
     await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).sendKeys(Key.RETURN);
     await driver.sleep(100);
@@ -220,7 +220,6 @@ AfterAll({timeout: 60 * 1000}, async function(){
 });
 
 
-
 // Add a post
 
 When('I add a message', {timeout: 60 * 1000}, async function () {
@@ -296,6 +295,77 @@ Then('I should see my keyword on the right panel', {timeout: 60 * 1000}, async f
     await driver.wait(until.elementIsVisible(element), 30000);
     const elem_text = await element.getText();
     expect(elem_text).to.equal(this.keywordRand);
+    await driver.findElement(By.xpath("/html/body/div[1]/section/div/header/nav/div/div[1]/div/button")).click();
+    await driver.findElement(By.xpath("/html/body/div[2]/div/ul/li[3]/button")).click();
+});
+
+
+// Add a Layer With a Name That Already Exists
+When('I Copy The Name of the First Layer', {timeout: 60 * 1000}, async function () {
+    await driver.sleep(10000);
+    var text = await driver.findElement(By.xpath('/html/body/div[1]/section/div/div/main/div/div/div/div[2]/div[1]/div/div/div[1]/div[1]')).getText();
+    console.log(text);
+    this.actualAnswer = text;
+});
+
+When('I fill the required data pasting the layer name that I copied', {timeout: 60 * 1000}, async function () {
+    this.nomeCamada = this.actualAnswer;
+    await driver.findElement(By.xpath("//*[@id=\"inputName\"]")).sendKeys(this.nomeCamada);
+    await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).click();
+    await driver.sleep(100);
+    await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).sendKeys("generic");
+    await driver.sleep(200);
+    await driver.findElement(By.xpath("/html/body/div/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[1]/div[2]/div/div/div[1]/input")).sendKeys(Key.RETURN);
+    await driver.sleep(100);
+    await driver.findElement(By.xpath("/html/body/div[1]/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[2]/div/div/div[1]/input")).sendKeys("cintiaalmeida");
+    await driver.findElement(By.xpath("/html/body/div[1]/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[2]/div/div/div[1]/input")).sendKeys(Key.RETURN);
+    await driver.sleep(100);
+    await driver.findElement(By.xpath("/html/body/div[1]/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[2]/div/div/div[1]/input")).sendKeys("testeEACH");
+    await driver.findElement(By.xpath("/html/body/div[1]/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[2]/div/div/div[1]/input")).sendKeys(Key.RETURN);
+    await driver.sleep(100);
+    await driver.findElement(By.xpath("//*[@id=\"inputDescription\"]")).sendKeys("Teste de adição de camada");
+    await driver.findElement(By.xpath("//*[@id=\"inputReference\"]")).sendKeys("DE TAL, Fulano. Especialização em temas gerais.");
+    await driver.findElement(By.xpath("/html/body/div[1]/section/div/div/main/div/div/div/div[1]/div/div/form/div[1]/div[4]/div/div[2]/a")).click();
+    await driver.findElement(By.xpath("//*[@id=\"Upload\"]")).sendKeys(__dirname + '/' + 'camada_teste.zip');
+});
+
+
+
+When('I verify if a error modal is displayed close', {timeout: 60 * 1000}, async function () { 
+    await driver.sleep(10000);
+    
+    try {
+        const elemento = await driver.findElement(By.xpath('/html/body/div[3]'));
+        const elementoPresente = await elemento.isDisplayed();
+        console.log(elementoPresente)
+        
+        if (elementoPresente) {
+            await driver.findElement(By.css('button.el-button.el-button--default.el-button--small.el-button--primary')).click();
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+
+Then('I should see an Error Conflict message', {timeout: 60 * 1000}, async function () { 
+    await driver.sleep(1000);
+
+    try {
+        const errorModalElement = await driver.findElement(By.css('div[role="alert"].el-message.el-message--error'));
+        const errorModalDisplayed = await errorModalElement.isDisplayed();
+        
+        if (errorModalDisplayed) {
+            const errorMessageElement = await errorModalElement.findElement(By.css('.el-message__content'));
+            const errorMessageActual = await errorMessageElement.getText();
+            const errorMessageExpected = 'Já existe uma camada com esse nome, por favor, escolha outro!';
+
+            expect(errorMessageActual).to.equal(errorMessageExpected);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+
     await driver.findElement(By.xpath("/html/body/div[1]/section/div/header/nav/div/div[1]/div/button")).click();
     await driver.findElement(By.xpath("/html/body/div[2]/div/ul/li[3]/button")).click();
 });
